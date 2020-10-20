@@ -6,6 +6,7 @@ from dijkstra import *
 from bi_dijkstra import *
 from a_star import *
 import sys
+import pyglet
 
 
 class TkinterDriver:
@@ -25,18 +26,18 @@ class PathFindingVis:
         self.alg_choice = choice
         self.show_vis = show_vis
 
-        self.win_width = 480
-        self.win_height = 550
+        self.win_width = 530
+        self.win_height = 610
 
         # start and end co-ordinates for the inner grid
         self.start_x = 40
-        self.end_x = 440
+        self.end_x = 490
         self.start_y = 80
-        self.end_y = 480
+        self.end_y = 530
 
         # size of each square and num squares
-        self.size = 20
-        self.n = 20
+        self.size = 30
+        self.n = 15
 
         self.primary_bg = self.hex_to_colour(black)
         self.grid_colour = self.hex_to_colour(grey)
@@ -63,15 +64,15 @@ class PathFindingVis:
         self.instructions = [
             'Choose a starting point and hit next!',
             'Choose an ending point and hit next!',
-            'Click on a number of cells to create walls and hit next!',
-            'Add bombs to make a cell more costly and hit run!'
+            'Click on cells to add walls!',
+            'Add bombs to make cells costlier!'
         ]
         self.instruction_text = self.instructions[self.user_choice]
 
         # Misc pygame setup
-        self.btn_size_x, self.btn_size_y = 60, 40
-        self.skip_x, self.skip_y = self.start_x, self.end_y + 10
-        self.next_x, self.next_y = self.end_x - self.btn_size_x, self.end_y + 10
+        self.btn_size_x, self.btn_size_y = 80, 40
+        self.skip_x, self.skip_y = self.start_x, self.end_y + 20
+        self.next_x, self.next_y = self.end_x - self.btn_size_x, self.end_y + 20
 
         self.load_images()
         self.load_font()
@@ -102,18 +103,19 @@ class PathFindingVis:
             ),
             (self.size, self.size)
         )
-        self.start_image = pygame.transform.scale(
+        self.stop_image = pygame.transform.scale(
             pygame.image.load(
-                r'C:\Users\akush\Desktop\Programming\Projects\Path_Finding_Visualisation\images\start.png'
+                r'C:\Users\akush\Desktop\Programming\Projects\Path_Finding_Visualisation\images\stop.png'
             ),
             (self.size, self.size)
         )
-        self.finish_image = pygame.transform.scale(
+        self.go_image = pygame.transform.scale(
             pygame.image.load(
-                r'C:\Users\akush\Desktop\Programming\Projects\Path_Finding_Visualisation\images\finish.png'
+                r'C:\Users\akush\Desktop\Programming\Projects\Path_Finding_Visualisation\images\go.png'
             ),
             (self.size, self.size)
         )
+
         self.wall_image = pygame.transform.scale(
             pygame.image.load(
                 r'C:\Users\akush\Desktop\Programming\Projects\Path_Finding_Visualisation\images\wall.png'
@@ -126,7 +128,7 @@ class PathFindingVis:
         Loads the font for the pygame display
         """
         self.text_font = pygame.font.Font(
-            r'C:\Users\akush\Desktop\Programming\Projects\Path_Finding_Visualisation\fonts\mono.ttf', 18)
+            r'C:\Users\akush\Desktop\Programming\Projects\Path_Finding_Visualisation\fonts\mono.ttf', 22)
 
     def draw_grid(self, show_path):
         """
@@ -151,9 +153,9 @@ class PathFindingVis:
                 pygame.draw.rect(self.screen, self.primary_bg, [
                                  x, y, self.size, self.size], 1)
                 if self.start_cell == cell:
-                    self.screen.blit(self.start_image, (x, y))
+                    self.screen.blit(self.go_image, (x, y))
                 if self.end_cell == cell:
-                    self.screen.blit(self.finish_image, (x, y))
+                    self.screen.blit(self.stop_image, (x, y))
                 if self.wall_cells.get(cell, False):
                     self.screen.blit(self.wall_image, (x, y))
                 if self.bomb_cells.get(cell, False):
@@ -220,10 +222,18 @@ class PathFindingVis:
                 self.instruction_text = 'Error: Cannot skip when choosing start or end!'
             else:
                 self.user_choice += 1
+                if self.user_choice <= 3:
+                    self.instruction_text = self.instructions[user_choice]
 
         if self.next_x <= x_pos <= self.next_x + self.btn_size_x and self.next_y <= y_pos <= self.next_y + self.btn_size_y:
             # next clicked
-            self.user_choice +=
+            if not self.user_choice and not self.start_cell:
+                self.instruction_text = 'You have not selected a start cell yet yet!'
+                return
+            if self.user_choice == 1 and not self.end_cell:
+                self.instruction_text = 'You have not selected an end cell yet!'
+                return
+            self.user_choice += 1
             if self.user_choice <= 3:
                 self.instruction_text = self.instructions[self.user_choice]
 
@@ -244,7 +254,7 @@ class PathFindingVis:
         while self.user_choice <= 3:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    sys.exit()
+                    pygame.quit()
                     break
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     pos = pygame.mouse.get_pos()
