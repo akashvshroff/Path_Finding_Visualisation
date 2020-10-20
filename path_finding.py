@@ -5,6 +5,7 @@ from colours import *
 from dijkstra import *
 from bi_dijkstra import *
 from a_star import *
+import sys
 
 
 class TkinterDriver:
@@ -16,11 +17,14 @@ class TkinterDriver:
 
 
 class PathFindingVis:
-    def __init__(self, choice, vis):
+    def __init__(self, choice, show_vis):
         """
         Initialises the pygame window and the algorithm based on the choice and calls upon 
         the function to get user input.
         """
+        self.alg_choice = choice
+        self.show_vis = show_vis
+
         self.win_width = 480
         self.win_height = 550
 
@@ -34,15 +38,16 @@ class PathFindingVis:
         self.size = 20
         self.n = 20
 
-        self.primary_bg = black
-        self.grid_colour = grey
-        self.visited_colour = blue_grey
-        self.text_colour = white
-        self.red_button = red
-        self.green_button = green
+        self.primary_bg = self.hex_to_colour(black)
+        self.grid_colour = self.hex_to_colour(grey)
+        self.visited_colour = self.hex_to_colour(blue_grey)
+        self.text_colour = self.hex_to_colour(white)
+        self.red_button = self.hex_to_colour(red)
+        self.green_button = self.hex_to_colour(green)
 
         self.win_dimensions = self.win_width, self.win_height
 
+        pygame.init()
         self.screen = pygame.display.set_mode(self.win_dimensions)
         pygame.display.set_caption("Path Finding")
         self.screen.fill(self.primary_bg)
@@ -73,6 +78,20 @@ class PathFindingVis:
         self.load_font()
 
         # Initialise object of algorithm
+
+        self.alg_obj = None
+
+        # call user input
+        self.get_user_input()
+
+    def hex_to_colour(self, hex):
+        """
+        Convert a hexadecimal colour into a tuple
+        """
+        red = int(hex[1:3], 16)
+        blue = int(hex[3:5], 16)
+        green = int(hex[5:7], 16)
+        return (red, blue, green)
 
     def load_images(self):
         """
@@ -107,14 +126,14 @@ class PathFindingVis:
         """
         Loads the font for the pygame display
         """
-        self.text_font = Font(None, 20)
+        self.text_font = pygame.font.Font(None, 25)
 
     def draw_grid(self, show_path):
         """
         Displays the grid to the users, shows the start and end, the walls, the visited nodes etc.
         """
         # show instruction text on top
-        text_to_show = self.text_font(
+        text_to_show = self.text_font.render(
             self.instruction_text, True, self.text_colour)
         text_rec = text_to_show.get_rect(
             center=(self.win_width // 2, self.start_y // 2))
@@ -151,7 +170,7 @@ class PathFindingVis:
 
         pygame.draw.rect(self.screen, self.red_button, [
                          self.skip_x, self.skip_y, self.btn_size_x, self.btn_size_y])
-        skip_text = self.text_font('SKIP', True, self.text_colour)
+        skip_text = self.text_font.render('SKIP', True, self.text_colour)
         skip_rect = skip_text.get_rect(
             center=(
                 self.skip_x + self.btn_size_x//2, self.skip_y+self.btn_size_y//2
@@ -159,13 +178,13 @@ class PathFindingVis:
         )
         self.screen.blit(skip_text, skip_rect)
 
-        pygame.draw.rect(self.screen, self.green_button.[
+        pygame.draw.rect(self.screen, self.green_button, [
             self.next_x, self.next_y, self.btn_size_x, self.btn_size_y
         ])
         n_t = 'NEXT'
         if self.user_choice == 3:
             n_t = 'RUN'
-        next_text = self.text_font(n_t, True, self.text_colour)
+        next_text = self.text_font.render(n_t, True, self.text_colour)
         next_rect = next_text.get_rect(
             center=(
                 self.next_x + self.btn_size_x//2, self.next_y + self.btn_size_y//2
@@ -177,17 +196,42 @@ class PathFindingVis:
         """
         Get the mouse input, adjust the dictionaries
         """
-        x, y = pos
-        if self.start_x <= x <= self.end_x and self.start_y <= y <= self.end_y:
+        x_pos, y_pos = pos
+        if self.start_x <= x_pos <= self.end_x and self.start_y <= y_pos <= self.end_y:
             # check which choice location
+            x, y = (x_pos-self.start_x)//self.size, (y_pos -
+                                                     self.start_y)//self.size
             if not self.user_choice:
                 self.start_cell = (x, y)
             elif self.user_choice == 1:
                 self.end_cell = (x, y)
             elif self.user_choice == 2:
-                self.wall_cells[(x, y)] = True
+                if (x, y) != self.start_cell and (x, y) != self.end_cell:
+                    self.wall_cells[(x, y)] = True
             else:
-                self.bomb_cells[(x, y)] = True
+                if (x, y) != self.start_cell and (x, y) != self.end_cell and not self.wall_cells.get((x, y), False):
+                    self.bomb_cells[(x, y)] = True
+
+        if self.skip_x <= x_pos <= self.skip_x + self.btn_size_x and self.skip_y <= y_pos <= self.skip_y + self.btn_size_y:
+            # skip clicked
+            if self.user_choice <= 1:
+                self.instruction_text = 'Error: Cannot skip when choosing start or end!'
+            else:
+                self.user_choice += 1
+
+        if self.next_x <= x_pos <= self.next_x + self.btn_size_x and self.next_y <= y_pos <= self.next_y + self.btn_size_y:
+            # next clicked
+            self.user_choice += 1
+
+    def process_data(self):
+        """
+        Process the walls and bombs to create an adjacency list and weight list and create an obj of the algorithm.
+        """
+        print(self.start_cell)
+        print(self.end_cell)
+        print(self.bomb_cells)
+        print(self.wall_cells)
+        sys.exit()
 
     def get_user_input(self):
         """
@@ -196,8 +240,16 @@ class PathFindingVis:
         while self.user_choice <= 3:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    pygame.quit()
+                    sys.exit()
                     break
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     pos = pygame.mouse.get_pos()
                     self.mouse_input(pos)
+            self.draw_grid(False)
+            pygame.display.update()
+            self.clock.tick(30)
+        self.process_data()
+
+
+if __name__ == '__main__':
+    obj = PathFindingVis(0, True)
