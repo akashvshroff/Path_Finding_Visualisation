@@ -50,7 +50,6 @@ class PathFindingVis:
         pygame.init()
         self.screen = pygame.display.set_mode(self.win_dimensions)
         pygame.display.set_caption("Path Finding")
-        self.screen.fill(self.primary_bg)
         self.clock = pygame.time.Clock()
 
         # data structures to use
@@ -133,6 +132,8 @@ class PathFindingVis:
         """
         Displays the grid to the users, shows the start and end, the walls, the visited nodes etc.
         """
+        self.screen.fill(self.primary_bg)
+
         # show instruction text on top
         text_to_show = self.text_font.render(
             self.instruction_text.upper(), True, self.text_colour)
@@ -222,8 +223,9 @@ class PathFindingVis:
 
         if self.next_x <= x_pos <= self.next_x + self.btn_size_x and self.next_y <= y_pos <= self.next_y + self.btn_size_y:
             # next clicked
-            self.user_choice += 1
-            self.instruction_text = self.instructions[self.user_choice]
+            self.user_choice +=
+            if self.user_choice <= 3:
+                self.instruction_text = self.instructions[self.user_choice]
 
     def process_data(self):
         """
