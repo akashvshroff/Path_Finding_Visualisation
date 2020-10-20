@@ -1,12 +1,12 @@
 import pygame
 import tkinter as tk
+from tkinter import messagebox
 import time
 from colours import *
 from dijkstra import *
 from bi_dijkstra import *
 from a_star import *
 import sys
-import pyglet
 
 
 class TkinterDriver:
@@ -14,7 +14,88 @@ class TkinterDriver:
         """
         Initialises the tkinter driver and gets user input from the user and calls upon the pygame window.
         """
-        pass
+        self.master = master
+        self.heading = ('Courier', 28, 'bold')
+        self.paragraph = ('Courier', 20)
+        self.bg_primary = black
+        self.bg_secondary = grey
+        self.text_colour = white
+        self.blue_button = blue
+        self.red_button = red
+        self.algorithms = ["DIJKSTRA", "BI-DIJKSTRA", "A STAR"]
+        self.set_up_tk()
+
+    def set_up_tk(self):
+        """
+        Sets up the tkinter main window.
+        """
+        self.master.geometry('500x500')
+        self.master.title("Path Finding Visualiser")
+
+        bg_frame = tk.Frame(self.master, height=500,
+                            width=500, bg=self.bg_primary)
+        bg_frame.pack()
+
+        bar_frame = tk.Frame(self.master, height=60,
+                             width=500, bg=self.bg_secondary)
+        bar_frame.place(relx=0.0, rely=0.0)
+        bar_title = tk.Label(
+            self.master, text='PATH FINDING', font=self.heading, bg=self.bg_secondary, fg=self.text_colour)
+        bar_title.place(relx=0.23, rely=0.015)
+
+        info = 'Choose an algorithm from the menu below and click on whether you want to see the visualisation or not! You can then choose start and end points, add walls and bombs and see how path-finding works.'
+        info_message = tk.Message(self.master, text=info.upper(
+        ), bg=self.bg_primary, fg=self.text_colour, highlightthickness=0, font=self.paragraph, width=480)
+        info_message.place(relx=0.01, rely=0.12)
+
+        algorithm_label = tk.Label(
+            self.master, text='ALGORITHMS:', bg=self.bg_primary, fg=self.text_colour, font=self.paragraph)
+        algorithm_label.place(relx=0.03, rely=0.63)
+
+        self.algorithm_var = tk.StringVar()
+        self.algorithm_var.set('CHOOSE')
+        algorithm_option = tk.OptionMenu(
+            self.master, self.algorithm_var, *self.algorithms)
+        algorithm_option.config(bg=self.bg_secondary)
+        algorithm_option.config(fg=self.text_colour)
+        algorithm_option.config(width=12)
+        algorithm_option.config(activebackground=self.bg_secondary)
+        algorithm_option.config(highlightthickness=0)
+        algorithm_option.config(activeforeground=self.text_colour)
+        algorithm_option.config(font=self.paragraph)
+        algorithm_option.place(relx=0.5, rely=0.63)
+
+        self.check_var = tk.IntVar()
+        check_vis = tk.Checkbutton(self.master, text='VISUALISE SOLVING PROCESS',
+                                   variable=self.check_var, onvalue=1, offvalue=0, font=self.paragraph,
+                                   bg=self.bg_primary, fg=self.text_colour, selectcolor=self.bg_secondary,
+                                   activebackground=self.bg_secondary, activeforeground=self.text_colour)
+        check_vis.place(relx=0.03, rely=0.76)
+
+        run_button = tk.Button(self.master, text='RUN', bg=self.blue_button, fg=self.text_colour,
+                               font=self.paragraph, command=self.run_path_finding, width=13)
+        run_button.place(relx=0.03, rely=0.86)
+
+        quit_button = tk.Button(self.master, text='QUIT', bg=self.red_button, fg=self.text_colour,
+                                font=self.paragraph, command=sys.exit, width=13)
+        quit_button.place(relx=0.54, rely=0.86)
+
+    def run_path_finding(self):
+        """
+        Fetch the algorithm choice and visualisation - create an obj of the Path Finding Vis.
+        """
+        alg, vis = self.algorithm_var.get(), self.check_var.get()
+        if alg == 'CHOOSE':
+            messagebox.showerror(
+                "ERROR", "You have not picked an algorithm."
+            )
+            return
+        choice = self.algorithms.index(alg)
+        show_vis = False
+        if vis == 1:
+            show_vis = True
+        self.master.destroy()
+        obj = PathFindingVis(choice, show_vis)
 
 
 class PathFindingVis:
@@ -26,18 +107,18 @@ class PathFindingVis:
         self.alg_choice = choice
         self.show_vis = show_vis
 
-        self.win_width = 530
-        self.win_height = 610
+        self.win_width = 620
+        self.win_height = 645
 
         # start and end co-ordinates for the inner grid
         self.start_x = 40
-        self.end_x = 490
-        self.start_y = 80
-        self.end_y = 530
+        self.end_x = 580
+        self.start_y = 60
+        self.end_y = 600
 
         # size of each square and num squares
         self.size = 30
-        self.n = 15
+        self.n = 18
 
         self.primary_bg = self.hex_to_colour(black)
         self.grid_colour = self.hex_to_colour(grey)
@@ -64,15 +145,16 @@ class PathFindingVis:
         self.instructions = [
             'Choose a starting point and hit next!',
             'Choose an ending point and hit next!',
-            'Click on cells to add walls!',
-            'Add bombs to make cells costlier!'
+            'Click and drag cells to add walls!',
+            'Add bombs to make cells twice as costly!'
         ]
         self.instruction_text = self.instructions[self.user_choice]
 
         # Misc pygame setup
-        self.btn_size_x, self.btn_size_y = 80, 40
-        self.skip_x, self.skip_y = self.start_x, self.end_y + 20
-        self.next_x, self.next_y = self.end_x - self.btn_size_x, self.end_y + 20
+        self.btn_size_x, self.btn_size_y = 70, 25
+        self.skip_x, self.skip_y = self.start_x, self.end_y + 10
+        self.next_x, self.next_y = self.end_x - self.btn_size_x, self.end_y + 10
+        self.mouse_pressed = False
 
         self.load_images()
         self.load_font()
@@ -223,7 +305,7 @@ class PathFindingVis:
             else:
                 self.user_choice += 1
                 if self.user_choice <= 3:
-                    self.instruction_text = self.instructions[user_choice]
+                    self.instruction_text = self.instructions[self.user_choice]
 
         if self.next_x <= x_pos <= self.next_x + self.btn_size_x and self.next_y <= y_pos <= self.next_y + self.btn_size_y:
             # next clicked
@@ -257,8 +339,15 @@ class PathFindingVis:
                     pygame.quit()
                     break
                 if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.mouse_pressed = True
                     pos = pygame.mouse.get_pos()
                     self.mouse_input(pos)
+                if event.type == pygame.MOUSEBUTTONUP:
+                    self.mouse_pressed = False
+                if event.type == pygame.MOUSEMOTION:
+                    if self.mouse_pressed:
+                        pos = pygame.mouse.get_pos()
+                        self.mouse_input(pos)
             self.draw_grid(False)
             pygame.display.update()
             self.clock.tick(30)
@@ -266,4 +355,6 @@ class PathFindingVis:
 
 
 if __name__ == '__main__':
-    obj = PathFindingVis(0, True)
+    root = tk.Tk()
+    obj = TkinterDriver(root)
+    root.mainloop()
