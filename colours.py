@@ -1,0 +1,7 @@
+black = '#121212'
+grey = '#212121'
+blue = '#40C4FF'
+green = '#4CAF50'
+red = '#FF5252'
+white = '#FFFFFF'
+blue_grey = '#CFD8DC'
