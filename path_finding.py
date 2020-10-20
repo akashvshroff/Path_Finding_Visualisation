@@ -71,8 +71,8 @@ class PathFindingVis:
 
         # Misc pygame setup
         self.btn_size_x, self.btn_size_y = 60, 40
-        self.skip_x, self.skip_y = self.start_x, self.end_y + 20
-        self.next_x, self.next_y = self.end_x - self.btn_size_x, self.end_y + 20
+        self.skip_x, self.skip_y = self.start_x, self.end_y + 10
+        self.next_x, self.next_y = self.end_x - self.btn_size_x, self.end_y + 10
 
         self.load_images()
         self.load_font()
@@ -126,7 +126,8 @@ class PathFindingVis:
         """
         Loads the font for the pygame display
         """
-        self.text_font = pygame.font.Font(None, 25)
+        self.text_font = pygame.font.Font(
+            r'C:\Users\akush\Desktop\Programming\Projects\Path_Finding_Visualisation\fonts\mono.ttf', 18)
 
     def draw_grid(self, show_path):
         """
@@ -134,7 +135,7 @@ class PathFindingVis:
         """
         # show instruction text on top
         text_to_show = self.text_font.render(
-            self.instruction_text, True, self.text_colour)
+            self.instruction_text.upper(), True, self.text_colour)
         text_rec = text_to_show.get_rect(
             center=(self.win_width // 2, self.start_y // 2))
         self.screen.blit(text_to_show, text_rec)
@@ -222,6 +223,7 @@ class PathFindingVis:
         if self.next_x <= x_pos <= self.next_x + self.btn_size_x and self.next_y <= y_pos <= self.next_y + self.btn_size_y:
             # next clicked
             self.user_choice += 1
+            self.instruction_text = self.instructions[self.user_choice]
 
     def process_data(self):
         """
