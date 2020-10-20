@@ -104,6 +104,7 @@ class PathFindingVis:
         Initialises the pygame window and the algorithm based on the choice and calls upon 
         the function to get user input.
         """
+        self.algorithms = ["DIJKSTRA", "BI-DIJKSTRA", "A STAR"]
         self.alg_choice = choice
         self.show_vis = show_vis
 
@@ -263,6 +264,16 @@ class PathFindingVis:
             )
         )
         self.screen.blit(skip_text, skip_rect)
+
+        algorithm_name = self.algorithms[self.alg_choice]
+        alg_text = self.text_font.render(
+            algorithm_name, True, self.text_colour)
+        alg_rect = alg_text.get_rect(
+            center=(
+                self.win_width//2, self.end_y + (self.win_height-self.end_y)//2
+            )
+        )
+        self.screen.blit(alg_text, alg_rect)
 
         pygame.draw.rect(self.screen, self.green_button, [
             self.next_x, self.next_y, self.btn_size_x, self.btn_size_y
