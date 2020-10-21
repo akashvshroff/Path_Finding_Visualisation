@@ -22,7 +22,7 @@ class TkinterDriver:
         self.text_colour = white
         self.blue_button = blue
         self.red_button = red
-        self.algorithms = ["DIJKSTRA", "BI-DIJKSTRA", "A STAR"]
+        self.algorithms = ["DIJKSTRA", "BI-DIJKSTRA", "A-STAR"]
         self.set_up_tk()
 
     def set_up_tk(self):
@@ -104,7 +104,7 @@ class PathFindingVis:
         Initialises the pygame window and the algorithm based on the choice and calls upon 
         the function to get user input.
         """
-        self.algorithms = ["DIJKSTRA", "BI-DIJKSTRA", "A STAR"]
+        self.algorithms = ["DIJKSTRA", "BI-DIJKSTRA", "A-STAR"]
         self.alg_choice = choice
         self.show_vis = show_vis
 
@@ -390,6 +390,9 @@ class PathFindingVis:
             self.alg_obj = BiDijkstraAlgorithm(
                 adj, cost, self.start_cell, self.end_cell
             )
+        else:
+            self.alg_obj = AStarAlgorithm(
+                adj, cost, self.start_cell, self.end_cell)
         if self.show_vis:
             self.solve_visualiser()
         else:
