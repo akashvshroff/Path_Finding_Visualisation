@@ -24,6 +24,7 @@ class BiDijkstraAlgorithm:
         self.q_r = [(0, self.t)]
         self.found_path = False
         self.path = []
+        self.distance = None
         heapq.heapify(self.q)
         heapq.heapify(self.q_r)
         self.workset = set()
@@ -56,16 +57,16 @@ class BiDijkstraAlgorithm:
         Calculates the shortest path from s to t.
         """
         try:
-            distance = self.dist[vertex] + self.dist_r[vertex]
+            self.distance = self.dist[vertex] + self.dist_r[vertex]
         except KeyError:
             return
         u_best = vertex  # middle node that is best
         for v in self.workset:
             dst = self.dist.get(v, float('inf')) + \
                 self.dist_r.get(v, float('inf'))
-            if dst < distance:
+            if dst < self.distance:
                 u_best = v
-                distance = dst
+                self.distance = dst
         last = u_best
         while last != self.s:
             self.path.append(last)

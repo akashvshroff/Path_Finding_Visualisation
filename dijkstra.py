@@ -16,6 +16,7 @@ class DijkstraAlgorithm:
         self.prev = {}  # previous node to reconstruct path
         self.q = [(0, self.s)]  # queue for order of processing nodes
         self.path = []  # shortest path
+        self.distance = None
         self.found_path = False
         heapq.heapify(self.q)
 
@@ -73,6 +74,7 @@ class DijkstraAlgorithm:
         """
         Reconstructs the shortest path from start vertex to end vertex.
         """
+        self.distance = self.dist[self.t]
         self.path.append(self.t)
         while self.path[-1] != self.s:
             self.path.append(self.prev[self.path[-1]])

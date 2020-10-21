@@ -17,6 +17,7 @@ class AStarAlgorithm:
         self.q = [(0, self.s)]  # queue for order of processing nodes
         self.path = []  # shortest path
         self.found_path = False
+        self.distance = None
         heapq.heapify(self.q)
 
     def heuristic(self, x, y):
@@ -34,7 +35,8 @@ class AStarAlgorithm:
         """
         if self.q and not self.path:
             u = heapq.heappop(self.q)
-            cost, node = u
+            cost_est, node = u
+            cost = self.dist.get(u, float('inf'))
             if not self.proc.get(node, False):
                 self.proc[node] = True
                 for id, vertex in enumerate(self.adj[node]):
@@ -63,7 +65,8 @@ class AStarAlgorithm:
         """
         while self.q:
             u = heapq.heappop(self.q)
-            cost, node = u
+            cost_est, node = u
+            cost = self.dist.get(u, float('inf'))
             if not self.proc.get(node, False):
                 self.proc[node] = True
                 for id, vertex in enumerate(self.adj[node]):
@@ -84,6 +87,7 @@ class AStarAlgorithm:
         """
         Reconstructs the shortest path from start vertex to end vertex.
         """
+        self.distance = self.dist[self.t]
         self.path.append(self.t)
         while self.path[-1] != self.s:
             self.path.append(self.prev[self.path[-1]])
