@@ -185,6 +185,8 @@ class PathFindingVis:
         self.shortest_path = []
         self.alg_obj = None
         self.instruction_text = self.instructions[self.user_choice]
+        self.button1_text = 'SKIP'
+        self.button2_text = 'NEXT'
 
     def hex_to_colour(self, hex):
         """
@@ -398,6 +400,7 @@ class PathFindingVis:
         Create an object and call upon the event loop with vis or not.
         """
         adj, cost = self.process_data()
+        self.instruction_text = 'SOLVING...'
         if self.alg_choice == 0:
             self.alg_obj = DijkstraAlgorithm(
                 adj, cost, self.start_cell, self.end_cell)
@@ -463,7 +466,7 @@ class PathFindingVis:
         Get the alg choice as well as choice to show visualisation and either reset or retry.
         """
         self.alg_choice = self.algorithms.index(self.algorithm_var.get())
-        self.show_vis = True if self.check_var == 1 else False
+        self.show_vis = True if self.check_var.get() == 1 else False
         self.root.destroy()
         if self.reset:
             self.reset_ds()
