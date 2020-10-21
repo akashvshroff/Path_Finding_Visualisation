@@ -500,7 +500,7 @@ class PathFindingVis:
         """
         if found:
             self.shortest_path = self.alg_obj.path
-            self.instruction_text = '{} cells used: {} is the cost'.format(
+            self.instruction_text = '{} cells used: {} is the cost.'.format(
                 len(self.shortest_path), self.alg_obj.distance+1)
         else:
             self.instruction_text = 'Error: no path exists. Please try again.'
