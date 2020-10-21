@@ -334,11 +334,39 @@ class PathFindingVis:
         """
         Process the walls and bombs to create an adjacency list and weight list and create an obj of the algorithm.
         """
-        print(self.start_cell)
-        print(self.end_cell)
-        print(self.bomb_cells)
-        print(self.wall_cells)
-        sys.exit()
+        adj_list = {}
+        cost_list = {}
+        for i in range(self.n):
+            for j in range(self.n):
+                cell = (i, j)
+                cost = 0 if not self.bomb_cells.get(cell, False) else 1
+                adj_list[cell] = []
+                cost_list[cell] = []
+                # west
+                if i - 1 >= 0 and not self.wall_cells.get((i - 1, j), False):
+                    adj_list[cell].append((i - 1, j))
+                    is_bomb = self.bomb_cells.get((i - 1, j), False)
+                    connection_cost = 1 if not is_bomb else 2
+                    cost_list[cell].append(connection_cost + cost)
+                # east
+                if i + 1 < self.n and not self.wall_cells.get((i + 1, j), False):
+                    adj_list[cell].append((i + 1, j))
+                    is_bomb = self.bomb_cells.get((i + 1, j), False)
+                    connection_cost = 1 if not is_bomb else 2
+                    cost_list[cell].append(connection_cost + cost)
+                # north
+                if j - 1 >= 0 and not self.wall_cells.get((i, j-1), False):
+                    adj_list[cell].append((i, j-1))
+                    is_bomb = self.bomb_cells.get((i, j-1), False)
+                    connection_cost = 1 if not is_bomb else 2
+                    cost_list[cell].append(connection_cost + cost)
+                # south
+                if j + 1 < self.n and not self.wall_cells.get((i, j+1), False):
+                    adj_list[cell].append((i, j+1))
+                    is_bomb = self.bomb_cells.get((i, j+1), False)
+                    connection_cost = 1 if not is_bomb else 2
+                    cost_list[cell].append(connection_cost + cost)
+        return adj_list, cost_list
 
     def get_user_input(self):
         """
