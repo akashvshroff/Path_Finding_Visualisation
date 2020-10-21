@@ -428,8 +428,8 @@ class PathFindingVis:
         app_bar = tk.Frame(self.root, width=450, height=60, bg=grey)
         app_bar.place(relx=0, rely=0)
 
-        heading = tk.Label(self.root, text='CHOOSE ALGORITHM',
-                           font=('Courier', 22), bg=grey, fg=white)
+        heading = tk.Label(self.root, text='PATH FINDING',
+                           font=('Courier', 22, 'bold'), bg=grey, fg=white)
         heading.place(relx=0.2, rely=0.04)
 
         alg_label = tk.Label(self.root, text="ALGORITHM:",
