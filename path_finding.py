@@ -43,7 +43,7 @@ class TkinterDriver:
             self.master, text='PATH FINDING', font=self.heading, bg=self.bg_secondary, fg=self.text_colour)
         bar_title.place(relx=0.23, rely=0.015)
 
-        info = 'Choose an algorithm from the menu below and click on whether you want to see the visualisation or not! You can then choose start and end points, add walls and bombs and see how path-finding works.'
+        info = 'Choose an algorithm from the menu below, pick start and end points, add walls and bombs and see how path-finding works. Here, we can only move left, right, up or down!'
         info_message = tk.Message(self.master, text=info.upper(
         ), bg=self.bg_primary, fg=self.text_colour, highlightthickness=0, font=self.paragraph, width=480)
         info_message.place(relx=0.01, rely=0.12)
@@ -347,6 +347,8 @@ class PathFindingVis:
         for i in range(self.n):
             for j in range(self.n):
                 cell = (i, j)
+                if self.wall_cells.get(cell, False):
+                    continue
                 cost = 0 if not self.bomb_cells.get(cell, False) else 1
                 adj_list[cell] = []
                 cost_list[cell] = []
@@ -384,6 +386,10 @@ class PathFindingVis:
         if self.alg_choice == 0:
             self.alg_obj = DijkstraAlgorithm(
                 adj, cost, self.start_cell, self.end_cell)
+        elif self.alg_choice == 1:
+            self.alg_obj = BiDijkstraAlgorithm(
+                adj, cost, self.start_cell, self.end_cell
+            )
         if self.show_vis:
             self.solve_visualiser()
         else:
@@ -431,7 +437,8 @@ class PathFindingVis:
             if self.alg_choice != 1:
                 self.visited_cells = self.alg_obj.proc
             else:  # bi_dijkstra
-                self.visited_cells = self.alg_obj.proc + self.alg_obj.proc_r
+                self.visited_cells = {
+                    **self.alg_obj.proc, **self.alg_obj.proc_r}
             self.draw_grid()
             pygame.display.update()
             self.clock.tick(30)
