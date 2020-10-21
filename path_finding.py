@@ -159,6 +159,7 @@ class PathFindingVis:
         self.show_path = False
         self.button1_text = 'SKIP'
         self.button2_text = 'NEXT'
+        self.reset = None
 
         self.load_images()
         self.load_font()
@@ -180,6 +181,9 @@ class PathFindingVis:
         self.bomb_cells = {}
         self.wall_cells = {}
         self.user_choice = 0
+        self.show_path = False
+        self.shortest_path = []
+        self.alg_obj = None
         self.instruction_text = self.instructions[self.user_choice]
 
     def hex_to_colour(self, hex):
@@ -465,13 +469,16 @@ class PathFindingVis:
             self.reset_ds()
             self.get_user_input()
         else:
+            self.show_path = False
+            self.shortest_path = []
+            self.alg_obj = None
             self.drive_solver()
 
     def solved_mouse_input(self, pos):
         """
         Handle user input once the algorithm finds the shortest path.
         """
-        self.reset = None
+
         x_pos, y_pos = pos
         if self.skip_x <= x_pos <= self.skip_x + self.btn_size_x and self.skip_y <= y_pos <= self.skip_y + self.btn_size_y:
             # retry clicked
@@ -490,8 +497,8 @@ class PathFindingVis:
         """
         if found:
             self.shortest_path = self.alg_obj.path
-            self.instruction_text = 'The shortest path uses {} cells!'.format(
-                len(self.shortest_path))
+            self.instruction_text = '{} cells used: {} is the cost'.format(
+                len(self.shortest_path), self.alg_obj.distance+1)
         else:
             self.instruction_text = 'Error: no path exists. Please try again.'
         self.button1_text = 'RERUN'
