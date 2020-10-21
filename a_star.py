@@ -36,7 +36,7 @@ class AStarAlgorithm:
         if self.q and not self.path:
             u = heapq.heappop(self.q)
             cost_est, node = u
-            cost = self.dist.get(u, float('inf'))
+            cost = self.dist.get(node, float('inf'))
             if not self.proc.get(node, False):
                 self.proc[node] = True
                 for id, vertex in enumerate(self.adj[node]):
@@ -66,7 +66,7 @@ class AStarAlgorithm:
         while self.q:
             u = heapq.heappop(self.q)
             cost_est, node = u
-            cost = self.dist.get(u, float('inf'))
+            cost = self.dist.get(node, float('inf'))
             if not self.proc.get(node, False):
                 self.proc[node] = True
                 for id, vertex in enumerate(self.adj[node]):
