@@ -156,6 +156,10 @@ class PathFindingVis:
         self.skip_x, self.skip_y = self.start_x, self.end_y + 10
         self.next_x, self.next_y = self.end_x - self.btn_size_x, self.end_y + 10
         self.mouse_pressed = False
+        self.shortest_path = []
+        self.show_path = False
+        self.button1_text = 'SKIP'
+        self.button2_text = 'NEXT'
 
         self.load_images()
         self.load_font()
@@ -213,7 +217,7 @@ class PathFindingVis:
         self.text_font = pygame.font.Font(
             r'C:\Users\akush\Desktop\Programming\Projects\Path_Finding_Visualisation\fonts\mono.ttf', 22)
 
-    def draw_grid(self, show_path):
+    def draw_grid(self):
         """
         Displays the grid to the users, shows the start and end, the walls, the visited nodes etc.
         """
@@ -228,11 +232,23 @@ class PathFindingVis:
 
         # draw grid
         pygame.draw.rect(self.screen, self.grid_colour, [
-                         self.start_x, self.start_y, self.end_x-self.start_x, self.end_y-self.start_y])
+                         self.start_x, self.start_y, self.end_x - self.start_x, self.end_y - self.start_y])
+
+        # draw path
+        for cell in self.shortest_path:
+            i, j = cell
+            x, y = i * self.size + self.start_x, j * self.size + self.start_y
+            pygame.draw.rect(self.screen, self.green_button,
+                             [x, y, self.size, self.size])
+
         for i in range(self.n):
             for j in range(self.n):
                 cell = (i, j)
                 x, y = i * self.size + self.start_x, j * self.size + self.start_y
+                if not self.show_path:
+                    if self.visited_cells.get(cell, False):
+                        pygame.draw.rect(self.screen, self.visited_colour, [
+                            x, y, self.size, self.size])
                 pygame.draw.rect(self.screen, self.primary_bg, [
                                  x, y, self.size, self.size], 1)
                 if self.start_cell == cell:
@@ -243,21 +259,13 @@ class PathFindingVis:
                     self.screen.blit(self.wall_image, (x, y))
                 if self.bomb_cells.get(cell, False):
                     self.screen.blit(self.bomb_image, (x, y))
-                if not show_path:
-                    if self.visited_cells.get(cell, False):
-                        pygame.draw.rect(self.screen, self.visited_colour, [
-                            x, y, self.size, self.size])
-                else:
-                    if self.path_cells.get(cell, False):
-                        pygame.draw.rect(self.screen, self.green_button, [
-                            x, y, self.size, self.size
-                        ])
 
         # skip and next buttons
 
         pygame.draw.rect(self.screen, self.red_button, [
                          self.skip_x, self.skip_y, self.btn_size_x, self.btn_size_y])
-        skip_text = self.text_font.render('SKIP', True, self.text_colour)
+        skip_text = self.text_font.render(
+            self.button1_text, True, self.text_colour)
         skip_rect = skip_text.get_rect(
             center=(
                 self.skip_x + self.btn_size_x//2, self.skip_y+self.btn_size_y//2
@@ -278,10 +286,8 @@ class PathFindingVis:
         pygame.draw.rect(self.screen, self.green_button, [
             self.next_x, self.next_y, self.btn_size_x, self.btn_size_y
         ])
-        n_t = 'NEXT'
-        if self.user_choice == 3:
-            n_t = 'RUN'
-        next_text = self.text_font.render(n_t, True, self.text_colour)
+        next_text = self.text_font.render(
+            self.button2_text, True, self.text_colour)
         next_rect = next_text.get_rect(
             center=(
                 self.next_x + self.btn_size_x//2, self.next_y + self.btn_size_y//2
@@ -315,8 +321,6 @@ class PathFindingVis:
                 self.instruction_text = 'Error: Cannot skip when choosing start or end!'
             else:
                 self.user_choice += 1
-                if self.user_choice <= 3:
-                    self.instruction_text = self.instructions[self.user_choice]
 
         if self.next_x <= x_pos <= self.next_x + self.btn_size_x and self.next_y <= y_pos <= self.next_y + self.btn_size_y:
             # next clicked
@@ -327,8 +331,12 @@ class PathFindingVis:
                 self.instruction_text = 'You have not selected an end cell yet!'
                 return
             self.user_choice += 1
-            if self.user_choice <= 3:
-                self.instruction_text = self.instructions[self.user_choice]
+
+        if self.user_choice <= 3:
+            self.instruction_text = self.instructions[self.user_choice]
+
+        if self.user_choice == 3:
+            self.button2_text = 'RUN'
 
     def process_data(self):
         """
@@ -368,6 +376,84 @@ class PathFindingVis:
                     cost_list[cell].append(connection_cost + cost)
         return adj_list, cost_list
 
+    def drive_solver(self):
+        """
+        Create an object and call upon the event loop with vis or not.
+        """
+        adj, cost = self.process_data()
+        if self.alg_choice == 0:
+            self.alg_obj = DijkstraAlgorithm(
+                adj, cost, self.start_cell, self.end_cell)
+        if self.show_vis:
+            self.solve_visualiser()
+        else:
+            self.solve()
+
+    def solved_alg(self, found):
+        """
+        Once the algorithm has finished running, shows number of cells used, shortest 
+        path etc. Handle for re-runs and quits etc.
+        """
+        if found:
+            self.shortest_path = self.alg_obj.path
+            self.instruction_text = 'The shortest path uses {} cells!'.format(
+                len(self.shortest_path))
+        else:
+            self.instruction_text = 'Error: no path exists. Please try again.'
+        self.button1_text = 'RERUN'
+        self.button2_text = 'RESET'
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    break
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    pos = pygame.mouse.get_pos()
+            self.draw_grid()
+            pygame.display.update()
+            self.clock.tick(30)
+
+    def solve_visualiser(self):
+        """
+        Event loop to visualise the solving of the program.
+        """
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    break
+            if not self.alg_obj.solver_vis():  # finished running
+                self.show_path = True
+                if self.alg_obj.found_path:
+                    self.solved_alg(True)
+                else:
+                    self.solved_alg(False)
+            if self.alg_choice != 1:
+                self.visited_cells = self.alg_obj.proc
+            else:  # bi_dijkstra
+                self.visited_cells = self.alg_obj.proc + self.alg_obj.proc_r
+            self.draw_grid()
+            pygame.display.update()
+            self.clock.tick(30)
+
+    def solve(self):
+        """
+        Solve without any visualiser, simply show shortest path when done.
+        """
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    break
+            self.alg_obj.solver()
+            if self.alg_obj.found_path:
+                self.solved_alg(True)
+            else:
+                self.solved_alg(False)
+            self.draw_grid()
+            pygame.display.update()
+            self.clock.tick(30)
+
     def get_user_input(self):
         """
         Gets the user input for the parameters like the start point, end point, walls etc
@@ -387,10 +473,10 @@ class PathFindingVis:
                     if self.mouse_pressed:
                         pos = pygame.mouse.get_pos()
                         self.mouse_input(pos)
-            self.draw_grid(False)
+            self.draw_grid()
             pygame.display.update()
             self.clock.tick(30)
-        self.process_data()
+        self.drive_solver()
 
 
 if __name__ == '__main__':
