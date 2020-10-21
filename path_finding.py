@@ -509,7 +509,7 @@ class PathFindingVis:
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    pygame.quit()
+                    sys.exit()
                     break
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     pos = pygame.mouse.get_pos()
@@ -525,7 +525,7 @@ class PathFindingVis:
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    pygame.quit()
+                    sys.exit()
                     break
             if not self.alg_obj.solver_vis():  # finished running
                 self.show_path = True
@@ -549,7 +549,7 @@ class PathFindingVis:
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    pygame.quit()
+                    sys.exit()
                     break
             self.alg_obj.solver()
             if self.alg_obj.found_path:
@@ -567,7 +567,7 @@ class PathFindingVis:
         while self.user_choice <= 3:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    pygame.quit()
+                    sys.exit()
                     break
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self.mouse_pressed = True
