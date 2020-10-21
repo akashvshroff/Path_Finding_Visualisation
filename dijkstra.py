@@ -16,6 +16,7 @@ class DijkstraAlgorithm:
         self.prev = {}  # previous node to reconstruct path
         self.q = [(0, self.s)]  # queue for order of processing nodes
         self.path = []  # shortest path
+        self.found_path = False
         heapq.heapify(self.q)
 
     def solver_vis(self):
@@ -24,7 +25,7 @@ class DijkstraAlgorithm:
         Swaps the while self.q conditional for an if self.q since the entire function
         is stored within the event loop.
         """
-        if self.q:
+        if self.q and not self.path:
             u = heapq.heappop(self.q)
             cost, node = u
             if not self.proc.get(node, False):
@@ -38,10 +39,13 @@ class DijkstraAlgorithm:
             if node != self.t:
                 return True
             else:
+                self.found_path = True
                 self.reconstruct_path()
                 return False
         else:
-            self.reconstruct_path()
+            if self.proc.get(self.t, False):
+                self.found_path = True
+                self.reconstruct_path()
             return False
 
     def solver(self):
@@ -61,7 +65,9 @@ class DijkstraAlgorithm:
                         heapq.heappush(self.q, (self.dist[vertex], vertex))
             if node == self.t:
                 break
-        self.reconstruct_path()
+        if self.proc.get(self.t, False):
+            self.found_path = True
+            self.reconstruct_path()
 
     def reconstruct_path(self):
         """
