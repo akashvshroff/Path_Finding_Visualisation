@@ -141,7 +141,6 @@ class PathFindingVis:
         self.visited_cells = {}
         self.bomb_cells = {}
         self.wall_cells = {}
-        self.path_cells = {}
         self.user_choice = 0
         self.instructions = [
             'Choose a starting point and hit next!',
@@ -170,6 +169,18 @@ class PathFindingVis:
 
         # call user input
         self.get_user_input()
+
+    def reset_ds(self):
+        """
+        Reset all the data structures used.
+        """
+        self.start_cell = ()
+        self.end_cell = ()
+        self.visited_cells = {}
+        self.bomb_cells = {}
+        self.wall_cells = {}
+        self.user_choice = 0
+        self.instruction_text = self.instructions[self.user_choice]
 
     def hex_to_colour(self, hex):
         """
@@ -398,6 +409,80 @@ class PathFindingVis:
         else:
             self.solve()
 
+    def tkinter_choose_alg(self):
+        """
+        Choose an algorithm from the list.
+        """
+        self.root = tk.Tk()
+        self.root.geometry('450x300')
+        main_frame = tk.Frame(self.root, bg=black, width=450, height=300)
+        main_frame.pack()
+
+        app_bar = tk.Frame(self.root, width=450, height=60, bg=grey)
+        app_bar.place(relx=0, rely=0)
+
+        heading = tk.Label(self.root, text='CHOOSE ALGORITHM',
+                           font=('Courier', 22), bg=grey, fg=white)
+        heading.place(relx=0.2, rely=0.04)
+
+        alg_label = tk.Label(self.root, text="ALGORITHM:",
+                             font=('Courier', 20), bg=black, fg=white)
+        alg_label.place(relx=0.02, rely=0.3)
+        self.algorithm_var = tk.StringVar()
+        self.algorithm_var.set(self.algorithms[self.alg_choice])
+        algorithm_option = tk.OptionMenu(
+            self.root, self.algorithm_var, *self.algorithms)
+        algorithm_option.config(bg=grey)
+        algorithm_option.config(fg=white)
+        algorithm_option.config(width=12)
+        algorithm_option.config(activebackground=grey)
+        algorithm_option.config(highlightthickness=0)
+        algorithm_option.config(activeforeground=white)
+        algorithm_option.config(font=("Courier", 20))
+        algorithm_option.place(relx=0.44, rely=0.3)
+
+        self.check_var = tk.IntVar()
+        check_vis = tk.Checkbutton(self.root, text='VISUALISE SOLVING PROCESS',
+                                   variable=self.check_var, onvalue=1, offvalue=0, font=('Courier', 20),
+                                   bg=black, fg=white, selectcolor=grey,
+                                   activebackground=grey, activeforeground=white)
+        check_vis.place(relx=0.02, rely=0.55)
+
+        submit_btn = tk.Button(self.root, text='SUBMIT', font=('Courier', 20),
+                               width=12, fg=white, bg=blue, command=self.reset_or_retry)
+        submit_btn.place(relx=0.3, rely=0.75)
+
+        self.root.mainloop()
+
+    def reset_or_retry(self):
+        """
+        Get the alg choice as well as choice to show visualisation and either reset or retry.
+        """
+        self.alg_choice = self.algorithms.index(self.algorithm_var.get())
+        self.show_vis = True if self.check_var == 1 else False
+        self.root.destroy()
+        if self.reset:
+            self.reset_ds()
+            self.get_user_input()
+        else:
+            self.drive_solver()
+
+    def solved_mouse_input(self, pos):
+        """
+        Handle user input once the algorithm finds the shortest path.
+        """
+        self.reset = None
+        x_pos, y_pos = pos
+        if self.skip_x <= x_pos <= self.skip_x + self.btn_size_x and self.skip_y <= y_pos <= self.skip_y + self.btn_size_y:
+            # retry clicked
+            self.reset = False
+            self.tkinter_choose_alg()
+
+        if self.next_x <= x_pos <= self.next_x + self.btn_size_x and self.next_y <= y_pos <= self.next_y + self.btn_size_y:
+            # reset clicked
+            self.reset = True
+            self.tkinter_choose_alg()
+
     def solved_alg(self, found):
         """
         Once the algorithm has finished running, shows number of cells used, shortest 
@@ -418,6 +503,7 @@ class PathFindingVis:
                     break
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     pos = pygame.mouse.get_pos()
+                    self.solved_mouse_input(pos)
             self.draw_grid()
             pygame.display.update()
             self.clock.tick(30)
