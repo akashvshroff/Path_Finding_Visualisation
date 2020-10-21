@@ -15,8 +15,8 @@ class TkinterDriver:
         Initialises the tkinter driver and gets user input from the user and calls upon the pygame window.
         """
         self.master = master
-        self.heading = ('Courier', 28, 'bold')
-        self.paragraph = ('Courier', 20)
+        self.heading = ('Fixedsys', 28, 'bold')
+        self.paragraph = ('Fixedsys', 20)
         self.bg_primary = black
         self.bg_secondary = grey
         self.text_colour = white
@@ -46,11 +46,11 @@ class TkinterDriver:
         info = 'Choose an algorithm from the menu below, pick start and end points, add walls and bombs and see how path-finding works. Here, we can only move left, right, up or down!'
         info_message = tk.Message(self.master, text=info.upper(
         ), bg=self.bg_primary, fg=self.text_colour, highlightthickness=0, font=self.paragraph, width=480)
-        info_message.place(relx=0.01, rely=0.12)
+        info_message.place(relx=0.01, rely=0.14)
 
         algorithm_label = tk.Label(
             self.master, text='ALGORITHMS:', bg=self.bg_primary, fg=self.text_colour, font=self.paragraph)
-        algorithm_label.place(relx=0.03, rely=0.63)
+        algorithm_label.place(relx=0.03, rely=0.61)
 
         self.algorithm_var = tk.StringVar()
         self.algorithm_var.set('CHOOSE')
@@ -63,14 +63,14 @@ class TkinterDriver:
         algorithm_option.config(highlightthickness=0)
         algorithm_option.config(activeforeground=self.text_colour)
         algorithm_option.config(font=self.paragraph)
-        algorithm_option.place(relx=0.5, rely=0.63)
+        algorithm_option.place(relx=0.5, rely=0.61)
 
         self.check_var = tk.IntVar()
         check_vis = tk.Checkbutton(self.master, text='VISUALISE SOLVING PROCESS',
                                    variable=self.check_var, onvalue=1, offvalue=0, font=self.paragraph,
                                    bg=self.bg_primary, fg=self.text_colour, selectcolor=self.bg_secondary,
                                    activebackground=self.bg_secondary, activeforeground=self.text_colour)
-        check_vis.place(relx=0.03, rely=0.76)
+        check_vis.place(relx=0.03, rely=0.73)
 
         run_button = tk.Button(self.master, text='RUN', bg=self.blue_button, fg=self.text_colour,
                                font=self.paragraph, command=self.run_path_finding, width=13)
@@ -429,12 +429,12 @@ class PathFindingVis:
         app_bar.place(relx=0, rely=0)
 
         heading = tk.Label(self.root, text='PATH FINDING',
-                           font=('Courier', 22, 'bold'), bg=grey, fg=white)
-        heading.place(relx=0.2, rely=0.04)
+                           font=('Fixedsys', 22, 'bold'), bg=grey, fg=white)
+        heading.place(relx=0.22, rely=0.04)
 
         alg_label = tk.Label(self.root, text="ALGORITHM:",
-                             font=('Courier', 20), bg=black, fg=white)
-        alg_label.place(relx=0.02, rely=0.3)
+                             font=('Fixedsys', 20), bg=black, fg=white)
+        alg_label.place(relx=0.03, rely=0.3)
         self.algorithm_var = tk.StringVar()
         self.algorithm_var.set(self.algorithms[self.alg_choice])
         algorithm_option = tk.OptionMenu(
@@ -445,17 +445,17 @@ class PathFindingVis:
         algorithm_option.config(activebackground=grey)
         algorithm_option.config(highlightthickness=0)
         algorithm_option.config(activeforeground=white)
-        algorithm_option.config(font=("Courier", 20))
+        algorithm_option.config(font=("Fixedsys", 20))
         algorithm_option.place(relx=0.44, rely=0.3)
 
         self.check_var = tk.IntVar()
         check_vis = tk.Checkbutton(self.root, text='VISUALISE SOLVING PROCESS',
-                                   variable=self.check_var, onvalue=1, offvalue=0, font=('Courier', 20),
+                                   variable=self.check_var, onvalue=1, offvalue=0, font=('Fixedsys', 20),
                                    bg=black, fg=white, selectcolor=grey,
                                    activebackground=grey, activeforeground=white)
         check_vis.place(relx=0.02, rely=0.55)
 
-        submit_btn = tk.Button(self.root, text='SUBMIT', font=('Courier', 20),
+        submit_btn = tk.Button(self.root, text='SUBMIT', font=('Fixedsys', 20),
                                width=12, fg=white, bg=blue, command=self.reset_or_retry)
         submit_btn.place(relx=0.3, rely=0.75)
 
