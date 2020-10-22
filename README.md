@@ -31,7 +31,45 @@
 
 ## Algorithms:
 
+- Below, I explain each of the algorithms used as well as some of the basic data structures used by each of the classes for the algorithms.
+
 ### Dijkstra:
+
+- The classical Dijkstra's algorithm can be used to find the shortest path from the source vertex to any other vertex in a weighted graph and in that sense it is commonly referred to as a 'one source, many targets' algorithm.
+- The algorithm only works on graphs that have edges with non-negative weights associated with them.
+- The algorithm works effectively by building a set of nodes that have the minimum distance from the start vertex and maintains the distance from each vertex to the start vertex in an array (or dictionary/hash-map) dist where dist[v] refers to an upper-bound on the maximum distance between the start vertex s and vertex v. The array dist is generally initialised with the value positive infinity for each node except the start node.
+- An important point to note is that in this algorithm, edges are *relaxed.* Suppose there exists a vertex v and a vertex u and there is an edge from u to v. To relax an edge is to choose whether the present path from start vertex s to v can be made better by including the vertex u and thus the edge u,v.
+- This is done by checking if dist[v] is larger than dist[u] + the weight of the edge from u to v. If so, then dist[v] is reduced and prev, an array (or hash-map) which indicates how the vertex was reached and is used in reconstructing the path, is updated.
+
+    ```python
+    def relax(u,v):
+    	if dist[v] > dist[u] + weight_of_edge(u,v):
+    			dist[v] = dist[u] + weight_of_edge(u,v)
+    			prev[v] = u
+    ```
+
+- Now, in order to build a set of nodes that already have the minimum distance from the start vertex, you need to choose nodes that have the minimum dist value. And this can be done by maintaining a priority queue of the nodes.
+- Thus the program becomes becomes:
+    - While the queue is not empty:
+        - Pop the smallest element.
+        - Iterate over all its neighbours:
+            - Relax the edge, if a vertex can get relaxed, change the priority of the vertex in queue to its new dist value.
+    - Once all have been processed, reconstruct the optimal path.
+- To reconstruct the shortest path, you can simply loop from the target vertex until you reach the source vertex:
+
+    ```python
+    vertex = target
+    path = []
+    while vertex != start:
+    	path.append(vertex)
+    	vertex = prev[vertex]
+    path.reverse() # to get the order correct
+    ```
+
+- A priority queue maintained by a min heap ensures a complexity of O(n log n) versus one maintained using an array which would result in a complexity of O(n^2) and in this build, I used the priority queue implemented by the heapq library.
+- Since changing the priority is time consuming, I maintain a hash-map proc which is true if a node has already been processed (if it has been popped from the queue and its neighbours have been relaxed) and therefore instead of changing priority, I can just add a new element to the queue with the new dist value.
+- Moreover, to decrease runtime, instead of waiting until all nodes have been processed, I break the while loop if the end vertex has been processed.
+- An excellent resource to know more about the Dijkstra algorithm is [here.](https://brilliant.org/wiki/dijkstras-short-path-finder/)
 
 ### Bi-Dijkstra:
 
