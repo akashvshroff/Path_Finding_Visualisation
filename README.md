@@ -85,3 +85,23 @@
 
 ---
 ### A* Search:
+- The A* search algorithm is an enhancement of the Dijkstra algorithm that can lead to run-times of about 1/1000 times in real life usage and it does so by conducting a *directed search*.
+- In the simplest of terms the algorithm works by knowing where the target vertex is and therefore the order in which it picks nodes and processes them varies based on this information. You then apply a potential function (or heuristic) which maps each node to some non-negative integer value. This value is then added in the queue for each node and therefore influences the order in which nodes are processed.
+- In this example, since we can only move left, right, up and down, the heuristic employed is the Manhattan distance. This distance is the sum of the absolute value of the difference in x and y co-ordinates between 2 vertices.
+
+    ```python
+    def manhattan_distance(x1,x2,y1,y2):
+    	return abs(x1-x2) + abs(y1-y2)
+    ```
+
+- In this scenario, our potential function or heuristic is calculated for every node with respect to the target node and therefore nodes selected are based on their distance from the target node.
+- This heuristic provides a lower bound for what the shortest between the node and the target node can be since it doesn't take into account any walls or bombs. And by using this heuristic to influence the selection of nodes means that the processed nodes are directed towards the target node.
+- Another common heuristic employed in a scenario where movement in not restricted is the Euclidean distance which returns the shortest distance between 2 points on a map.
+
+    ```python
+    import math
+    def euclid_distance(x1,x2,y1,y2):
+        return math.sqrt((x1-x2)**2 + (y1-y2)**2)
+    ```
+
+- To learn more about the A* algorithm and other heuristics you can apply, check out this [article.](https://brilliant.org/wiki/a-star-search/)
