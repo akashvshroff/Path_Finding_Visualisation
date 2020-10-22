@@ -475,6 +475,7 @@ class PathFindingVis:
             self.show_path = False
             self.shortest_path = []
             self.alg_obj = None
+            self.visited_cells = {}
             self.drive_solver()
 
     def solved_mouse_input(self, pos):
