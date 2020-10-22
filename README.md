@@ -91,7 +91,7 @@
 
     ```python
     def manhattan_distance(x1,x2,y1,y2):
-    	return abs(x1-x2) + abs(y1-y2)
+        return abs(x1-x2) + abs(y1-y2)
     ```
 
 - In this scenario, our potential function or heuristic is calculated for every node with respect to the target node and therefore nodes selected are based on their distance from the target node.
