@@ -501,7 +501,7 @@ class PathFindingVis:
         counter = 0  # animation of path
         if found:
             self.instruction_text = '{} cells used: {} is the cost.'.format(
-                len(self.shortest_path), self.alg_obj.distance+1)
+                len(self.alg_obj.path), self.alg_obj.distance+1)
         else:
             self.instruction_text = 'Error: no path exists. Please try again.'
         self.button1_text = 'RERUN'
