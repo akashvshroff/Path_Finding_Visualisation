@@ -44,15 +44,9 @@
 
     ```python
     def relax(u,v):
-<<<<<<< HEAD
-      if dist[v] > dist[u] + weight_of_edge(u,v):
-        dist[v] = dist[u] + weight_of_edge(u,v)
-        prev[v] = u
-=======
        if dist[v] > dist[u] + weight_of_edge(u,v):
           dist[v] = dist[u] + weight_of_edge(u,v)
           prev[v] = u
->>>>>>> e1b2c7e293a406475a63305b7d69082739108596
     ```
 
 - Now, in order to build a set of nodes that already have the minimum distance from the start vertex, you need to choose nodes that have the minimum dist value. And this can be done by maintaining a priority queue of the nodes.
@@ -84,6 +78,7 @@
 - To understand how the Dijkstra's algorithm effectively works, we need to visualise the locations of the nodes that are processed (quite an apt time to tell you to use the tool I have made) and the best way to describe how the processed nodes grow over time is by imagining them as a circle of growing radius with the source vertex as the center and the circle continues to expand outwards until the target vertex is met or all vertices have been processed.
 - In the bi-directional approach, you run Dijkstra's algorithm from both the source vertex as well as the target vertex and reconstruct a path when the two circles meet, i.e when one tries to process a node that the other has already processed.
 - The middle node where the forward and backward Dijkstra meet provides an upper bound for the shortest distance but it isn't confirmed to be the shortest distance, that can be found by looping over all the processed nodes and calculating the shortest distance and identifying the best middle node.
+- By using the forward and backward search, the number of nodes visited are almost half and while this does not lead to any complexity changes since it is a constant factor nor does it reflect too well on road networks, while traversing social networks, this change leads to exponential benefits owing to the ['Six Handshakes Theorem'](https://www.coursera.org/lecture/algorithms-on-graphs/six-handshakes-wcPrk).
 - The data structures used are very similar to the Dijkstra algorithm and the two approaches, forward and backward, run turn by turn in the while loop.
 - An excellent resource to understand the underlying mathematical theorems is [here.](https://www.coursera.org/lecture/algorithms-on-graphs/bidirectional-dijkstra-7ml18)
 - Another excellent resource is this [article.](https://www.homepages.ucl.ac.uk/~ucahmto/math/2020/05/30/bidirectional-dijkstra.html)
