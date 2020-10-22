@@ -498,8 +498,8 @@ class PathFindingVis:
         Once the algorithm has finished running, shows number of cells used, shortest 
         path etc. Handle for re-runs and quits etc.
         """
+        counter = 0  # animation of path
         if found:
-            self.shortest_path = self.alg_obj.path
             self.instruction_text = '{} cells used: {} is the cost.'.format(
                 len(self.shortest_path), self.alg_obj.distance+1)
         else:
@@ -514,6 +514,9 @@ class PathFindingVis:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     pos = pygame.mouse.get_pos()
                     self.solved_mouse_input(pos)
+            if found and counter < len(self.alg_obj.path):
+                self.shortest_path.append(self.alg_obj.path[counter])
+                counter += 1
             self.draw_grid()
             pygame.display.update()
             self.clock.tick(30)
