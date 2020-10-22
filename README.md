@@ -34,7 +34,6 @@
 - Below, I explain each of the algorithms used as well as some of the basic data structures used by each of the classes for the algorithms.
 
 ---
-
 ### Dijkstra:
 
 - The classical Dijkstra's algorithm can be used to find the shortest path from the source vertex to any other vertex in a weighted graph and in that sense it is commonly referred to as a 'one source, many targets' algorithm.
@@ -73,6 +72,15 @@
 - Moreover, to decrease runtime, instead of waiting until all nodes have been processed, I break the while loop if the end vertex has been processed.
 - An excellent resource to know more about the Dijkstra algorithm is [here.](https://brilliant.org/wiki/dijkstras-short-path-finder/)
 
+---
 ### Bi-Dijkstra:
+- The Bidirectional Dijkstra algorithm is a modification of the regular Dijkstra algorithm and to understand it, it is easier to understand the working of the Dijkstra's algorithm.
+- To understand how the Dijkstra's algorithm effectively works, we need to visualise the locations of the nodes that are processed (quite an apt time to tell you to use the tool I have made) and the best way to describe how the processed nodes grow over time is by imagining them as a circle of growing radius with the source vertex as the center and the circle continues to expand outwards until the target vertex is met or all vertices have been processed.
+- In the bi-directional approach, you run Dijkstra's algorithm from both the source vertex as well as the target vertex and reconstruct a path when the two circles meet, i.e when one tries to process a node that the other has already processed.
+- The middle node where the forward and backward Dijkstra meet provides an upper bound for the shortest distance but it isn't confirmed to be the shortest distance, that can be found by looping over all the processed nodes and calculating the shortest distance and identifying the best middle node.
+- The data structures used are very similar to the Dijkstra algorithm and the two approaches, forward and backward, run turn by turn in the while loop.
+- An excellent resource to understand the underlying mathematical theorems is [here.](https://www.coursera.org/lecture/algorithms-on-graphs/bidirectional-dijkstra-7ml18)
+- Another excellent resource is this [article.](https://www.homepages.ucl.ac.uk/~ucahmto/math/2020/05/30/bidirectional-dijkstra.html)
 
+---
 ### A* Search:
