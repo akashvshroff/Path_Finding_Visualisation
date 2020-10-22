@@ -12,9 +12,9 @@
 
 # Description:
 - In case you are only interested in the description of the algorithms, you can access them here:
-    - [Dijkstra]()
-    - [Bi-Dijkstra]()
-    - [A* Search]()
+    - [Dijkstra](https://github.com/akashvshroff/Path_Finding_Visualisation#dijkstra)
+    - [Bi-Dijkstra](https://github.com/akashvshroff/Path_Finding_Visualisation#bi-dijkstra)
+    - [A* Search](https://github.com/akashvshroff/Path_Finding_Visualisation#a-search)
 - Before I delve into the build - with the corresponding pygame event loops and tkinter setup - I want to address the file structure.
 - The UI comprising of the Tkinter window(s) and the pygame screen is housed in the path_finding.py file.
 - Each of the algorithms are classes in their individual files and each of these have methods and attributes which share names. in order to ensure that the algorithm choice doesn't alter how the path_finding file accesses methods and attributes. Moreover, each of these classes have different methods for solving with visualising and without - this is something I could have avoided with a conditional and a return statement but I've consciously separated them so that it  is easier to understand how running the algorithm corresponds to the pygame event loop.
