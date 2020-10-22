@@ -44,9 +44,9 @@
 
     ```python
     def relax(u,v):
-    	if dist[v] > dist[u] + weight_of_edge(u,v):
-            dist[v] = dist[u] + weight_of_edge(u,v)
-            prev[v] = u
+      if dist[v] > dist[u] + weight_of_edge(u,v):
+        dist[v] = dist[u] + weight_of_edge(u,v)
+        prev[v] = u
     ```
 
 - Now, in order to build a set of nodes that already have the minimum distance from the start vertex, you need to choose nodes that have the minimum dist value. And this can be done by maintaining a priority queue of the nodes.
