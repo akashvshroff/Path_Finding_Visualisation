@@ -78,4 +78,4 @@ class DijkstraAlgorithm:
         self.path.append(self.t)
         while self.path[-1] != self.s:
             self.path.append(self.prev[self.path[-1]])
-        return reversed(self.path)
+        self.path.reverse()
