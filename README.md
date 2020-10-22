@@ -33,6 +33,8 @@
 
 - Below, I explain each of the algorithms used as well as some of the basic data structures used by each of the classes for the algorithms.
 
+---
+
 ### Dijkstra:
 
 - The classical Dijkstra's algorithm can be used to find the shortest path from the source vertex to any other vertex in a weighted graph and in that sense it is commonly referred to as a 'one source, many targets' algorithm.
@@ -44,8 +46,8 @@
     ```python
     def relax(u,v):
     	if dist[v] > dist[u] + weight_of_edge(u,v):
-    			dist[v] = dist[u] + weight_of_edge(u,v)
-    			prev[v] = u
+            dist[v] = dist[u] + weight_of_edge(u,v)
+            prev[v] = u
     ```
 
 - Now, in order to build a set of nodes that already have the minimum distance from the start vertex, you need to choose nodes that have the minimum dist value. And this can be done by maintaining a priority queue of the nodes.
