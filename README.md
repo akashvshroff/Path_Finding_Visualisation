@@ -11,6 +11,23 @@
 - The build was very engaging and forced me to reckon with abstract concepts such as complexity of both time and space in order to make sure my algorithms were reflective, in some part, of the real world applications. Moreover, designing a clean, minimal UI that captivated users forced me to understand how colours complement each other and their effect on the human psyche.
 
 # Description:
+- In case you are only interested in the description of the algorithms, you can access them here:
+    - [Dijkstra]()
+    - [Bi-Dijkstra]()
+    - [A* Search]()
+- Before I delve into the build - with the corresponding pygame event loops and tkinter setup - I want to address the file structure.
+- The UI comprising of the Tkinter window(s) and the pygame screen is housed in the path_finding.py file.
+- Each of the algorithms are classes in their individual files and each of these have methods and attributes which share names. in order to ensure that the algorithm choice doesn't alter how the path_finding file accesses methods and attributes. Moreover, each of these classes have different methods for solving with visualising and without - this is something I could have avoided with a conditional and a return statement but I've consciously separated them so that it  is easier to understand how running the algorithm corresponds to the pygame event loop.
+- On running, the user is first greeted by a tkinter window that explains the process and gets the input for the algorithm and whether they want to see the visualisation screen - by way of a dropdown menu and checkbox.
+- An instance of the pygame class is created using the data that the user enters and then the user input for the path-finding components that is the source, target, walls and bombs is gotten - at each step, instructions are provided to make it easier for any user.
+- The pygame class operates using 4 event loops:
+    - The user input loop which is housed in the get_user_input method where mouse presses etc are all handled as the user picks the components.
+    - The solve with visualisation loop which gets the visited cells from the object of the algorithm chosen and displays them.
+    - The solve without visualisation loop which has no visualisation and therefore just calls upon the algorithm and once it is over, it calls the solved loop.
+    - The solved loop which is called by the solve (with or without visualisation) displays the path found if any, or shows a message saying that no path exists. If a path is present, it also indicates the cost and number of cells used. Here, users are given the option to re-run on the same grid using a different algorithm or simply reset the entire grid and run again.
+- All the pygame loops use the same function draw_grid to display the messages, the grid and all its components (bombs, walls, start cell, end cell, visited cells during visualisation and the path if any etc) as well as the buttons to be displayed.
+- Another tkinter window is displayed when the user wants to re-run or reset and here the user can select an algorithm again and whether they want visualisation.
+- Once the user-data is gotten, the driver function which processes the data, creating both a cost matrix as well as the adjacency list for the connections, as well as creating the object of the necessary algorithm and using the appropriate event loop, is called.
 
 ## Algorithms:
 
