@@ -1,4 +1,9 @@
 # Outline:
+
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=11iqoKeVibg
+" target="_blank"><img src="http://img.youtube.com/vi/11iqoKeVibg/0.jpg" 
+alt="IMAGE ALT TEXT HERE" width="500" height="300" border="10" /></a>
+
 - A visualisation tool that helps users understand how classical path-finding algorithms such as the Dijkstra algorithm, the Bidirectional Dijkstra algorithm and the A* search algorithm work by viewing them in action. These algorithms (and their optimizations) are widely used in popular mapping tools such as Google Maps and Yandex.
 - Users can choose a start node and an end cell, add walls to block off paths and add bombs to make certain cells more expensive to use and then visualise how these algorithms explore the graph and locate the shortest path. Users can also run different algorithms on the same grid that they have populated with specific walls and bombs in order to compare the procedure of algorithms.
 - The video above illustrates how the path-finding tool, built using Tkinter and PyGame, works and showcases its clean design and friendly UI.
