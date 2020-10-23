@@ -1,6 +1,5 @@
 
-[![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/11iqoKeVibg/0.jpg)](http://www.youtube.com/watch?v=11iqoKeVibg)
-*Click to watch a demonstration of the build!*
+[![Click for demo](http://img.youtube.com/vi/11iqoKeVibg/0.jpg)](http://www.youtube.com/watch?v=11iqoKeVibg)
 
 # Outline:
 - A visualisation tool that helps users understand how classical path-finding algorithms such as the Dijkstra algorithm, the Bidirectional Dijkstra algorithm and the A* search algorithm work by viewing them in action. These algorithms (and their optimizations) are widely used in popular mapping tools such as Google Maps and Yandex.
